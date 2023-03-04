@@ -1,11 +1,20 @@
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception{
-        System.out.println(getAllStudentInfos());
+        //connect();
+
+        //getAllStudentInfos();
+
+        //getInfoWithScanner();
+
+        //updateTable();
     }
+
+    //Bazaya connect oluruq
     public static Connection connect() throws SQLException, ClassNotFoundException {
         Class.forName("org.postgresql.Driver");
         String url="jdbc:postgresql://localhost:5432/div_academy1";
@@ -19,6 +28,7 @@ public class Main {
         return con;
     }
 
+    //Bazadaki Student infosunu cap edir
     public static List<Student> getAllStudentInfos() throws SQLException, ClassNotFoundException {
         List<Student> students=new ArrayList<>();
 
@@ -39,5 +49,30 @@ public class Main {
         }
         return students;
     }
+
+    //Scanner ile bazadan student infosu alir
+    public static void getInfoWithScanner() throws Exception{
+        Scanner scanner=new Scanner(System.in);
+        System.out.print("Enter Student name: ");
+        String name=scanner.nextLine();
+
+        Connection connection=connect();
+        PreparedStatement st=connection.prepareStatement("SELECT * FROM student WHERE student_name=?");
+        st.setString(1,name);
+        ResultSet rs=st.executeQuery();
+
+        while (rs.next()){
+            System.out.println("Student name: "+rs.getString("student_name")+"\nStudent surname: "+rs.getString("student_surname")+"\nProfession: "+rs.getString("profession")+"\nStart date: "+rs.getDate("startdate"));
+        }
+    }
+
+    //Tabloyu update edirem
+    public static void updateTable() throws Exception{
+        Connection connection=connect();
+        Statement st=connection.createStatement();
+        st.executeUpdate("UPDATE student SET student_name='Hikmet' WHERE student_name='Nurlan'");
+        System.out.println("Updating is succesfully :)");
+    }
+
 
 }
